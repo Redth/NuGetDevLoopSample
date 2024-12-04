@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <PackageId>Redth.SomeLibrary</PackageId>
+    <PackageVersion>0.0.99999</PackageVersion>
+    <Authors>Redth</Authors>
+    <Description>SomeLibrary is a library that does some things.</Description>
+
+    <PackageOutputPath>../artifacts/</PackageOutputPath>
+  </PropertyGroup>
+
+</Project>
