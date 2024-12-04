@@ -11,6 +11,7 @@
     <Description>SomeLibrary is a library that does some things.</Description>
 
     <PackageOutputPath>../artifacts/</PackageOutputPath>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
 </Project>

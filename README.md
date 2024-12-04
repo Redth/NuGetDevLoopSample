@@ -14,6 +14,8 @@ Additionally, we can use a target that runs after Pack which deletes the local p
 
 You may want to consider moving this into specific projects you are building as nugets and iterating in this way, in case there are Library projects that you are _not_ and do not want this behaviour with.
 
+This file also does a simple `Touch` operation to any of the .csproj files you have listed in the `<ConsumerProjects>` item group so that when you go to debug them, they will be changed, forcing a restore/build of the project again to capture the changes.
+
 ```xml
 <Project>
   <PropertyGroup>
@@ -30,9 +32,15 @@ You may want to consider moving this into specific projects you are building as 
     <RestoreFallbackFolders></RestoreFallbackFolders>
   </PropertyGroup>
 
-    <!-- After the Library is pack'd, delete the local cache folder so the restore happens again with the new bits of the same version -->
+  <!-- You can list out the projects you want to have restore packages again for, once the library project/nuget package has changes built -->
+  <ItemGroup>
+    <ConsumerProjects Include="$(MSBuildThisFileDirectory)/SomeApp/SomeApp.csproj" />
+  </ItemGroup>
+
+  <!-- After the Library is packed, delete the local cache folder so the restore happens again with the new bits of the same version -->
   <Target Name="PostPackCleanup" AfterTargets="Pack">
     <RemoveDir Directories="$(MSBuildThisFileDirectory)/.packages" />
+    <Touch Files="@(ConsumerProjects)" />
   </Target>
 </Project>
 ```
@@ -59,3 +67,19 @@ Additionally we configure the local `./artifacts` folder as a package source.
 	</packageSources>
 </configuration>
 ```
+
+
+## Workflow
+
+1. Build the Library project
+When you make a change to the Library project, since the project has `<GeneratePackageOnBuild>True</GeneratePackageOnBuild>`, you can simply build the project which will also run the `Pack` target, which should cause the `.packages` folder to be deleted afterwards.
+
+2. Rebuild the Consume Project(s)
+To observe the changes in the project you have consuming this NuGet package, you will need to rebuild it, or you can list it in the `<ConsumerProjects>` item group inside of the `Directory.Build.props` file to have the project file automatically touched, such that it will run a restore/build when you start debugging it.
+
+
+## Testing this project
+1. You can test this behaviour by running `SomeApp`.  Observe that it prints out `Version: 1.2.3.4`.
+2. Next, in the `SomeLibrary/SomeClass` file, change the version number (eg: to `1.2.3.5`).
+3. Now, Build the `SomeLibrary` project
+4. Next, run the `SomeApp` project again, and observe it now prints out `Version: 1.2.3.5`

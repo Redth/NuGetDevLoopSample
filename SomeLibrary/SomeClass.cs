@@ -4,7 +4,7 @@
     {
         public Version GetVersion()
         {
-			return new Version(1, 2, 3, 6);
+			return new Version(1, 2, 3, 4);
 		}
     }
 }

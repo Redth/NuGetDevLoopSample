@@ -13,7 +13,12 @@
     <RestoreFallbackFolders></RestoreFallbackFolders>
   </PropertyGroup>
 
+  <ItemGroup>
+      <ConsumerProjects Include="$(MSBuildThisFileDirectory)/SomeApp/SomeApp.csproj" />
+  </ItemGroup>
+
   <Target Name="PostPackCleanup" AfterTargets="Pack">
     <RemoveDir Directories="$(MSBuildThisFileDirectory)/.packages" />
+    <Touch Files="@(ConsumerProjects)" />
   </Target>
 </Project>
